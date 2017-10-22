@@ -1,0 +1,342 @@
+* Cloud computing
+is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
+- IaaS
+- PaaS
+- SaaS
+** Features
+- Speed and Agility
+- Cost
+- Easy access to resources
+- Maintenance
+- Multi-tenancy
+- Reliability
+** Types
+- Private cloud (OpenStack)
+- Public cloud (AWS/Google)
+- Hybrid cloud
+* Virtualization
+- can be offered on different hardware and software layers, like CPU (Central Processing Unit), Disk, Memory, Filesystems, etc. In this chapter, we will look at some examples of creating Virtual Machines (VMs) after emulating the different kind of hardware to install a Guest OS on that.
+- Virtual Machines are created on top of a *Hypervisor*, which runs on top of the Host Machine's Operating System.
+  - emulate hardware like CPU, Disk, Network, Memory and install guest machines
+  - create multiple guest machines
+  - examples
+    - KVM
+    - Xen
+    - VMware
+    - Virtualbox
+    - Hyper-V
+- *Nested virtualization*
+** KVM 
+- (Kernel-based Virtual Machine) is  a full virtualization solution for Linux on x86 hardware. Linux, Windows, Solaris
+- It is part of the main-line Linux Kernel. It is ported for S/390, PowerPC, IA-64 and ARM as well.
+- How it looks
+[[file:./Kernel-based_Virtual_Machine.png]]
+- KVM does not perform any emulation itself, but it exposes the */dev/kvm* interface, by which an external userspace host can do emulation.
+- *QEMU* is one such host
+- Advantages
+  - open source
+  - cheap
+  - scalable
+  - security features (SELinux). MAC(mandatory access control)
+** VirtualBox
+- an x86 and AMD64/Intel64 virtualization product from Oracle, which runs on Windows, Linux, Macintosh, and Solaris
+- Windows, Linux families, and others, like Solaris, FreeBSD, DOS
+- easy-to-use multi-platform Hypervisor
+- not part of the mainline kernel.
+- to use it on Linux, we have to compile and insert the respective kernel module.
+- GNU General Public License (GPL) version 2.
+** Vagrant
+- Vagrant by Hashicorp helps us automate the setup of one or more VMs by providing an end-to-end life-cycle using the vagrant command line.
+- Linux, Mac-OSX, and Windows.
+- recent docker support
+- Terms
+  - Boxes                                    Base images
+  - Vagrant Providers                        underlying engine/hypervisor used to provision a machine. Vagrant supports VirtualBox, Hyper-V and Docker.
+  - Synced Folders
+  - Provisioning                             allow us to automatically install software, make configuration changes,after machine boot. *File, Shell, Ansible, Puppet, Chef, Docker*
+  - Plugins                                  to extend functionality
+* IaaS
+- form of Cloud Computing which provides on-demand physical and virtual computing resources, storage, network, firewall, load balancers, etc.
+** Providers
+- AWS : uses mostly the XEN Hypervisor.
+  - examples
+    - t2.nano: 512 MiB of memory, 1 vCPU, 3 CPU Credits/hour, EBS-only, 32 bit or 64-bit platform.
+    - c4.large: 3.75 GiB of memory, 2 vCPUs, 64-bit platform.
+    - d2.8xlarge: 244 GiB of memory, 36 vCPUs, 24 x 2000 GB of HDD-based instance storage, 64-bit platform, 10 Gigabit Ethernet.
+  - pre-configured images, called Amazon Machine Images (AMIs).
+  - Amazon supports configuring security and network access to our instances.
+  - EBS can be attached or deattached
+  - supports provisioning dedicated hosts
+  - other features
+    - Elastic IP
+    - VPC
+    - CloudWatch
+    - Auto Scaling
+- Azure
+  - lets you choose between different tiers, based on the usage and the Operating Systems or the pre-defined application Virtual Machines
+  - Using Resource Manager templates, we can define the template for the Virtual Machine Deployment.
+- DigitalOcean
+  - create a simple cloud quickly, in as little as 55 seconds.
+  - All of the VMs are created on top of the KVM Hypervisor and have SSD (Solid-State Drive) as the primary disk.
+  - Some features
+  - Floating IPs within the same datacenter,
+  - Shared Private Networking and
+  - Team Accounts
+- GCE
+  - Persistent Disk, Local SSD, Global Load Balancing, Compliance & Security, Automatic Discount, etc.
+  - It is very secure, encrypting all data stored.
+  - supports custom machine types
+- OpenStack
+  - public and private clouds
+  - floating ips
+  - modular nature
+  - components
+    - Keystone : Provides Identity, Token, Catalog, and Policy services to projects.
+    - Nova
+      - select underlying Hypervisior
+        - libvirt (qemu/KVM), Hyper-V, VMware, XenServer, Xen via libvirt.
+    - Horizon
+    - Glance
+    - Swift
+    - cinder
+    - heat
+    - Ceilometer
+* PaaS
+- allows its users to develop, run, and manage applications without worrying about the underlying infrastructure.
+- from Cloud computing
+  - Amazon
+  - GCE
+  - Azure
+- on-premise
+  - OpenShift Origin
+  - Deis
+** cloudfoundry
+  - can deployed on-premise or on IaaS, like AWS, vSphere, or OpenStack.
+  - commericial providers
+    - HPE Helion Cloud Foundry, IBM Bluemix, Pivotal Cloud Foundry
+  - features
+    - Application portability
+    - Application auto-scaling
+    - Centralized platform management
+    - Dynamic routing
+    - Role-based application deployment
+    - Horizontal and vertical scaling
+    - Application health management
+    - Centralized logging
+    - Security
+    - Support for different IaaS technologies.
+  - subsytems
+    - Bosh
+      - component vms   :    run all the different components of CF to provide different PaaS functionalities.
+      - application vms :    run diego containers (earlier garden)
+      - *Bosh provides the system orchestration to configure VMs into well-defined state-through-manifest files*
+    - cloud controller
+      - runs the applications and other processes on provisioned VMs
+    - Router
+      - routes incoming traffic to cloud controller or to the application
+  - buildpacks
+    - language specific
+    - information about how to download dependencies and configure specific applications
+    - custom buildpacks can be created
+    - Droplet execution agent (dea)
+  - *droplet* contains an OS-specific pre-built root-filesystem called stack
+  - CF also supports running Docker images, but it uses the Garden runtime to run them
+  [[file:./cf-arch.png]]
+  - [[https://courses.edx.org/courses/course-v1:LinuxFoundationX%2BLFS151.x%2B2T2016/courseware/090fb08a605c483a9dea2b714d084013/88510a1c669740f7b2fd98781f7efb68/?child%3Dfirst][for details]]
+  - free account [[run.pivotal.io]]
+- OpenShift
+
+** OpenShift
+- by RedHat
+- OpenShift v3, is built on top of the container technology, which uses Docker and Kubernetes
+- can be deployed on Linux OS or microos (Atomic Host and its variants)
+- Plans
+  - Online     : pay as per usage 
+  - dedicated  : managed by RedHat
+  - enterprise : on your own hardware
+- OpenShift origin
+- Docker and K8S
+- *Source to Image (S2I)*, which enables us to create Docker images from the source code repository to deploy applications easily.
+- CI/CD integration
+- Dedicated or Enterprise plans you get a GUI to manage projects, users, access, etc.
+- We can look at the logs. OpenShift creates an internal Docker registry in which it pushes the images created via "s2i" process.
+** Heroku
+- container based cloud platform
+- *Heroku Platform*
+- Workflow
+  - Procfile
+  - buildpacks
+  - runtime is called *slug*
+  - third party add-ons to get access to value-added services like logging, caching, monitoring, etc.
+  - slug + configuration variables + add-ons = release
+  - Unix container is called *Dyno*
+  - *Dyno manager*
+  - *Salesforce integration*
+** Deis
+- docker and CoreOS
+[[file:./deis-arch.png]]
+
+- components
+  - Control plane
+    - management tasks
+    - container scheduling
+    - blob storage called *Store* has docker images, platform state, logs from the data plane
+  - Data Plane
+    - where all containers run
+  - router mesh
+- 100% open source
+- supports Heroku buildpacks
+[[file:./deis-workflow.png]]
+
+* Conrainers
+- Operating-System-level virtualization allows us to run multiple isolated user-space instances in parallel.
+- user-space instances are *containers*
+- When a container is created from an image, it runs as a process on the host's kernel.
+- It is the host kernel's job to isolate and provide resources to each container.
+** Building blocks
+- Namespaces
+  - pid
+  - net
+  - ipc
+  - uts
+  - mnt
+  - user
+- cgroups: organize processes hierarchically and distribute system resources along the hierarchy in a controlled and configurable manner.
+  - blkio
+  - cpu
+  - cpuacct
+  - cpuset
+  - devices
+  - freezer
+  - memory
+- *ufs* :
+  - allows files and directories of separate filesystems, known as layers, to be transparently overlaid on each other, to create a new virtual filesystem.
+  - An image used in Docker is made of multiple layers and, while starting a new container, we merge all those layers to create a read-only filesystem.
+  - On top of a read-only filesystem, a container gets a read-write layer, which is an ephemeral layer and it is local to the container.
+** Container runtimes
+- *runC* is the CLI tool for spawning and running containers according to the specifications (The Open Container Initiative).
+- Docker
+  - [[file:./docker-engine.png]]
+- rkt coreOS
+* Micro OSes for containers
+** Atomic Host
+  - RPM content
+  - can be based on Fedora, CentOS, or Red Hat Enterprise Linux (RHEL).
+  - components
+    - rpm-ostree : manage 2 FS
+    - systemd : manage services
+    - Docker
+    - K8S
+  - Cockpit
+  - features
+    - increased security through SELinux.
+    - can be installed on bare-metal, as well as VMs.
+    - can be based on Fedora, CentOS, and Red Hat Enterprise Linux.
+    - Nodes can be clustered on Atomic Host using Kubernetes.
+** CoreOS
+  - arch [[file:./core-os-arch.png]]
+  - Amazon EC2, Digital Ocean, Microsoft Azure, Google Cloud,
+  - bare metal or vms
+  - *cloud-config*
+  - features
+    - no package manager
+    - active / passive root partitions
+    - when running with active, passive can be used to download updates
+    - *self-update* feature
+    - specific release channels with update strategies can be chosen
+    - High Availability and security
+    - most cloud providers
+    - Docker and rkt
+    - Paid support
+    - update without downtime
+  - components
+    - docker
+    - etcd
+    - systemd
+    - fleet : launch applications using systemd
+  - enterprise the Kubernetes solution called Tectonic.
+** VMWare Photon
+- minimal
+- small footprint
+- quickly boot
+- *optimized for VMWare products*
+- supports Docker, rkt, and the Pivotal Garden
+- open-source, yum-compatible package manager (tdnf)
+- Amazon EC2, Google Cloud, and Microsoft Azure
+** Rancher OS
+- least footprint
+- arc : [[file:./rancher-os-arch.png]]
+- 
+* Container orchestration
+** problems to be solved
+- Who can bring multiple hosts together and make them part of a cluster ?
+- schedule the containers to run on specific hosts
+- containers to communicate with each irrespective of on which host it is run
+- Who will make sure that the container has the dependent storage, when it is scheduled on a specific host ?
+- Who will make sure that containers are accessible over a service name, so that we do not have to bother about container accessibility over IP addresses?
+** Docker Swarm
+- [[file:./swarm-arch.jpg]]
+- multiple docker engines to create a virtual engine
+- components
+  - Swarm manager (active/passive) : accepts command on behalf of the cluster
+  - agents : hosts that run docker engines
+  - discovery service : libkv abstracts KV like etcd, zookeeper, consul
+  - Overlay Networking : libnetwork
+- filters : node, container
+- strategies : spread, binpack, random
+- pluggable scheduler architecture : mesos and k8s can be plugged
+- *docker machine*
+  - drivers for Amazon EC2, Google Cloud, Digital Ocean, Vagrant
+** K8S
+- [[file:./k8s-arch.png]]
+- multiple volume plugins like the GCP/AWS disk, NFS, iSCSI, Ceph, Gluster, Cinder, Flocker, etc. to attach volumes to Pods.
+- automatically self heal
+- batch execution
+** Apache mesos
+- Apache Mesos was created with this in mind, so that we can optimally use the resources available, even if we are running disparate applications on a pool of nodes.
+- cluster of nodes as one big computer, which manages CPU, memory, and other resources across a cluster.
+- [[file:./mesos-arch.jpg]]
+- *Marathon* is used to schedule
+- components
+  - master
+  - slaves
+  - frameworks
+  - executors
+- features
+  - uses zookeeper
+  - enables native isolation between tasks with Linux Containers
+  - Java, Python and C++ APIs
+  - WebUI
+** Nomad
+- from hashicorp
+- single binary
+- client and server mode
+- HCL
+- cluster management and resource scheduling
+** Cloud foundry diego
+** Amazon ECS
+- [[file:./ecs-arch.png]]
+- components
+  - cluster
+  - container instances
+  - task definition
+  - Schduler
+    - Service schduler
+    - RunTask
+    - StartTask
+    - Service
+    - Task
+    - Container
+- features
+  - has provisions to integrate with third party schedulers, like *Mesos Marathon*
+  - Amazon ECS CLI is compatible with Docker Compose.
+  - AWS CloudWatch
+  - AWS CloudTrail
+  - Docker Registry or Docker Hub.
+** Google container engine
+- running K8S on google cloud
+- features
+  - hybrid networking
+** Azure container service
+- apache mesos or docker swarm
+- templates for both Mesos and Docker Swarm
