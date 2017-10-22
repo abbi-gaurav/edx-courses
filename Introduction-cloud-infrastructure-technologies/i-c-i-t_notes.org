@@ -340,3 +340,22 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 ** Azure container service
 - apache mesos or docker swarm
 - templates for both Mesos and Docker Swarm
+* Unikernels
+- select the part of the kernel needed to run with the specific application.
+- single address space executable, which has both application and kernel components.
+- deployed on VMs or bare-metal.
+- specialized Virtual Machine images with
+  - application code
+  - configuration files
+  - user space libraries needed by the application
+  - application runtime
+  - system libs which allow inter communication with hypervisior
+- [[file:./unikernel-vs-os.png]]
+- A more secured application than the traditional VM, as the attack surface is reduced.
+- Implementations
+  - Special purpose built        : ING, HalVM, MirageOS, and Clive.
+  - Generalized 'fat' unikernels : BSD Rump kernels, OSv, Drawbridge
+- Unikernels helped Docker to run the Docker Engine on top of Alpine Linux on Mac and Windows with their default hypervisors,
+- which are xhyve Virtual Machine and Hyper-V VM respectively.
+- [[file:./shared-vs-unikernel.png]]
+
