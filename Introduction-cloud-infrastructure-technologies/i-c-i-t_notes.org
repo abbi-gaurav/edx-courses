@@ -359,3 +359,40 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - which are xhyve Virtual Machine and Hyper-V VM respectively.
 - [[file:./shared-vs-unikernel.png]]
 
+* microservices
+* Container as a service (CaaS)
+** solutions
+- OpenStack Magnum
+- Docker Universal Control Plane
+** CaaS enablers
+- K8S
+- AWS EC2 container service (ECS)
+- Tectonic (K8S + CoreOS)
+- Rancher
+** Docker UCP
+- on-premise or virtual
+- [[file:./docker-caas-ecosystem.jpg]]
+- features
+  - works with swarm and docker machine
+  - LDAP/AD
+  - web admin GUI
+** Docker Datacenter
+- built on top of UCP and Docker Trusted Registry
+- hosted completely behind firewall
+- enterprise-class CaaS platform on-premises
+** OpenStack Magnum
+- Containers are orchestrated and scheduled on clusters created by Kubernetes, Docker Swarm, or Mesos.
+- [[file:./magnum-arch.png]]
+- components
+  - Server API  : magnum client talks to the service
+  - Conductor   : It manages the cluster lifecycle through Heat and communicates with the Cluster Container Orchestration Engine (COE)
+  - Bays        : are nodes on which the Container Orchestration Engine sets up the respective Cluster.
+  - BayModels   : stores metadata information about Bays like the Container Orchestration Engine, Keypairs, Images to use, etc.
+  - COE         : supports Kubernetes, Docker Swarm, and Mesos. COEs are on top of Micro OSes, like Atomic Host, CoreOS, etc.
+  - Pod
+  - Service                 : logical set of pods
+  - Replication Controller  :
+  - Container
+- Magnum offers an asynchronous API that is compatible with Keystone.
+- It brings multi-tenancy by default, as it creates a Bay per tenant.
+
