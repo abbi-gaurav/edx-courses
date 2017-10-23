@@ -111,39 +111,39 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
   - OpenShift Origin
   - Deis
 ** cloudfoundry
-  - can deployed on-premise or on IaaS, like AWS, vSphere, or OpenStack.
-  - commericial providers
-    - HPE Helion Cloud Foundry, IBM Bluemix, Pivotal Cloud Foundry
-  - features
-    - Application portability
-    - Application auto-scaling
-    - Centralized platform management
-    - Dynamic routing
-    - Role-based application deployment
-    - Horizontal and vertical scaling
-    - Application health management
-    - Centralized logging
-    - Security
-    - Support for different IaaS technologies.
-  - subsytems
-    - Bosh
-      - component vms   :    run all the different components of CF to provide different PaaS functionalities.
-      - application vms :    run diego containers (earlier garden)
-      - *Bosh provides the system orchestration to configure VMs into well-defined state-through-manifest files*
-    - cloud controller
-      - runs the applications and other processes on provisioned VMs
-    - Router
-      - routes incoming traffic to cloud controller or to the application
-  - buildpacks
-    - language specific
-    - information about how to download dependencies and configure specific applications
-    - custom buildpacks can be created
-    - Droplet execution agent (dea)
-  - *droplet* contains an OS-specific pre-built root-filesystem called stack
-  - CF also supports running Docker images, but it uses the Garden runtime to run them
-  [[file:./cf-arch.png]]
-  - [[https://courses.edx.org/courses/course-v1:LinuxFoundationX%2BLFS151.x%2B2T2016/courseware/090fb08a605c483a9dea2b714d084013/88510a1c669740f7b2fd98781f7efb68/?child%3Dfirst][for details]]
-  - free account [[run.pivotal.io]]
+- can deployed on-premise or on IaaS, like AWS, vSphere, or OpenStack.
+- commericial providers
+  - HPE Helion Cloud Foundry, IBM Bluemix, Pivotal Cloud Foundry
+- features
+  - Application portability
+  - Application auto-scaling
+  - Centralized platform management
+  - Dynamic routing
+  - Role-based application deployment
+  - Horizontal and vertical scaling
+  - Application health management
+  - Centralized logging
+  - Security
+  - Support for different IaaS technologies.
+- subsytems
+  - Bosh
+    - component vms   :    run all the different components of CF to provide different PaaS functionalities.
+    - application vms :    run diego containers (earlier garden)
+    - *Bosh provides the system orchestration to configure VMs into well-defined state-through-manifest files*
+  - cloud controller
+    - runs the applications and other processes on provisioned VMs
+  - Router
+    - routes incoming traffic to cloud controller or to the application
+- buildpacks
+  - language specific
+  - information about how to download dependencies and configure specific applications
+  - custom buildpacks can be created
+  - Droplet execution agent (dea)
+- *droplet* contains an OS-specific pre-built root-filesystem called stack
+- CF also supports running Docker images, but it uses the Garden runtime to run them
+- [[file:./cf-arch.png]]
+- [[https://courses.edx.org/courses/course-v1:LinuxFoundationX%2BLFS151.x%2B2T2016/courseware/090fb08a605c483a9dea2b714d084013/88510a1c669740f7b2fd98781f7efb68/?child%3Dfirst][for details]]
+- free account [[run.pivotal.io]]
 - OpenShift
 
 ** OpenShift
