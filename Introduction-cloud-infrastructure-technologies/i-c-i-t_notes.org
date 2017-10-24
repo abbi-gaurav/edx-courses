@@ -396,3 +396,147 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - Magnum offers an asynchronous API that is compatible with Keystone.
 - It brings multi-tenancy by default, as it creates a Bay per tenant.
 
+* SDN
+- decouples the network control layer from the layer which forwards the traffic.
+- 3 Planes
+  - Data Plane       : for handling data packets and apply actions to them based on rules which we program into lookup-tables.
+  - Control Plane    : calculating and programming the actions for the Data Plane. 
+  - Management Plane : we can configure, monitor, and manage the network devices.
+- In SDN
+  - we decouple the Control Plane with the Data Plane.
+  - The Control Plane has a centralized view of the overall network, which allows it to create forwarding tables of interest.
+  - These tables are then given to the Data Plane to manage network traffic. 
+  - [[file:./sdn-fwk.png]]
+- We can use configuration tools like Ansible or Chef to configure SDN
+
+* Networking for containers
+- host kernel uses the Network Namespace feature of the Linux Kernel to isolate the network from one container to another.
+- Network Namespaces can be shared as well.
+- On a single host, when using the *Virtual Ethernet (veth)* feature with Linux bridging, we can give a virtual network interface to each container and assign it an IP address.
+- With Linux Kernel features, like *IPVLAN*, we can configure each container to have a unique and world-wide routable IP address.
+- multi-host networking with containers
+  - some form of Overlay network driver
+  - encapsulates Layer 2 traffic to a higher layer
+  - e.g. Docker Overlay Driver, Flannel, Weave, etc. Project Calico allows multi-host networking on Layer 3 using BGP (Border Gateway Protocol).
+- Container Networking standards
+  - Container Network Model (CNM)
+    - Docker, Inc. is the primary driver for this networking model. It is implemented using the libnetwork project
+    - Null - NOOP implementation of the driver. It is used when no networking is required.
+    - Bridge - It provides a Linux-specific bridging implementation based in Linux Bridge.
+    - Overlay - It provides a multi-host communication over VXLAN.
+    - Remote - It does not provide a driver. Instead, it provides a means of supporting drivers over a remote transport, by which we can write third-party drivers.
+  - Container Networking Interface (CNI) Proposal
+    - CoreOS
+    - derived from rkt Networking Proposal
+    - Kubernetes has added support for CNI.
+* Service Discovery
+- Registration
+- Lookup
+  - SkyDNS and Mesos-DNS are examples 
+* docker single host networking
+- bridge
+  - can forward traffic between two networks based on MAC
+  - Docker uses the Linux's Virtual Ethernet (veth) feature to create two virtual interfaces
+    - attached to container
+    - other end to the docker0 bridge
+- Null
+  - no networking
+  - only loopback
+  - no access from outside
+- Host
+  - we can share the host machine's network namespace with a container.
+  - container has full access to host's network
+* Sharing Network Namespaces among Containers
+- two or more containers can have the same network stack and reach each other by referring to localhost.
+- ~--net=container:CONTAINER~
+- Kubernetes uses the feature detailed above to share the same network namespaces among multiple containers in a pod.
+* docker multi-host networking
+- Overlay network,
+  - in which we encapsulate the container's IP packet inside the host's packet, while sending it over the wire.
+  - While receiving, we decapsulate the whole packet and forward the container's packet to the receiving container.
+- examples based on overlay network
+  - Docker Overlay Driver
+  - Flannel
+  - Weave
+- Project Calico uses the Border Gateway Protocol (BGP) to do IP-based routing instead of encapsulation.
+  - As it works on Layer 3, it requires some hardware support.
+** Docker Overlay driver
+- works based on "libnetwork, a built-in VXLAN-based overlay network driver, and Docker’s libkv library".
+- [[file:./docker-overlay-nw.png]]
+* docker networking plugins
+- weave network plugin
+  - multi-host container networking for Docker
+  - provides service discovery and does not require any external cluster store to save networking configuration.
+- Kuryr Network Plugin
+  - part of the OpenStack Kuryr project, which also implements Libnetwork's remote driver API by utilizing Neutron, which is OpenStack's networking service. 
+* Software Defined Storge (SDS)
+- [[file:./sds.png]]
+- some examples
+  - Ceph
+  - Gluster
+  - FreeNAS
+  - Nexenta
+  - VMWarw Virtual SAN
+** Ceph
+- Ceph is a distributed object store and file system designed to provide excellent performance, reliability and scalability.
+- [[file:./ceph-arch.png]]
+- RADOS : It is the object store which stores the objects.
+  - Object Storage Device
+  - Ceph Monitors (MON)
+  - Ceph Metadata Server (MDS)
+- Benifits
+  - It is an Open Source storage solution, which supports Object, Block, and Filesystem storage.
+  - It runs on any commodity hardware, without any vendor lock-in.
+  - It provides data safety for mission-critical applications.
+  - It provides automatic balance of filesystems for maximum performance.
+  - It is scalable and highly available, with no single point of failure.
+  - It is a reliable, flexible, and cost-effective storage solution.
+** Gluster
+- GlusterFS is a scalable network filesystem.
+- storage solutions for media streaming, data analysis, and other data- and bandwidth-intensive tasks.
+- free and open source software.
+- to create
+  - grouping the machines in a Trusted Pool
+  - we group the directories (called bricks) from those machines in a GlusterFS volume, using FUSE (Filesystem in Userspace)
+  - supported volume kinds
+    - Distributed GlusterFS Volume
+    - Replicated GlusterFS Volume
+    - Distributed Replicated GlusterFS Volume
+    - Striped GlusterFS Volume
+    - Distributed Striped GlusterFS Volume.
+- does not have a centralized metadata server. It uses an elastic hashing algorithm to store files on bricks.
+- Access
+  - Native FUSE mount
+  - NFS
+  - CIFS (Common Internet File System).
+- [[file:./gluster-fs-volume.png]]
+- Benifits
+  - It is an Open Source storage solution that supports Object, Block, and Filesystem storage.
+  - It does not have a metadata server.
+  - It is scalable, modular and extensible.
+  - It is POSIX-compliant, providing High Availability via local and remote data replication.
+* Docker Storage backends
+- Docker uses Copy-on-write to start containers from images
+- supported
+  - AUFS
+  - BtrFS
+  - Device Mapper
+  - VFS
+  - ZFS
+* Docker Volumes
+- data volume is a specially-designated directory within one or more containers that bypasses the Union File System.
+- *Data Volume Container* just creates a volume
+* Volume Plugins for Docker
+- Flocker
+  - Flocker is an open-source container data volume manager for your Dockerized applications.
+  - Flocker Docker Volume is referred to as a dataset, which can be used with any of the containers in the cluster.
+  - [[file:./flocker.jpg]]
+  - Supported storage options
+    - AWS Elastic Block Storage (EBS)
+    - OpenStack Cinder with any supported backend
+    - EMC ScaleIO, XtremeIO, VMAX
+    - VMware vSphere and vSan
+    - NetApp OnTap. 
+- GlusterFS
+- Blockbridge
+- EMC Rex-Ray
