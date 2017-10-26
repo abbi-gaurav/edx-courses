@@ -540,3 +540,143 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - GlusterFS
 - Blockbridge
 - EMC Rex-Ray
+* DevOps and CI/CD
+** Jenkins
+- CloudBees
+- build Freestyle, Apache Ant, and Apache Maven-based projects
+- plugins to extend functionlity
+- Pipeline : entire application lifecycle
+  - durable
+  - pausable
+  - versatile
+  - extensible
+- on premise
+- cloud
+- as a SaaS
+** Drone
+- only uses docker
+- hosted and on-prem
+- CI/CD
+- Github and Bitbucket
+- Deploying
+  - Heroku
+  - AppEngine
+  - dotCloud
+  - SSH
+  - Amazon S3
+- free for public projects.
+- integrated with GitHub, Bitbucket, and Google Code,
+- Docker containers to test code
+** Travis CI
+- hosted, distributed CI solution for projects hosted only on GitHub.
+- link our GitHub account with Travis and select the project (repository) for which we want to run the test.
+- .travis.yml file, which defines how our build should be executed step-by-step.
+- steps
+  - before_install
+  - install : dependencies
+  - before_script
+  - script  : run build script
+  - after_success or after_failure
+  - Optional before_deploy
+  - Optional deploy
+  - Optional after_deploy
+  - after_script
+- deployment to ~Heroku, AWS Codedeploy, Cloud Foundry, OpenShift~
+- feature
+  - supports testing for different versions of the same runtime.
+  - free and open source projects
+  - hosted, distributed integrated with Github
+** Shippable
+- CI and CD pipeline for Github/ Bitbucket and other repositories
+- runs all the builds inside a Docker container, which are called minions.
+- [[file:./shippable-struct.png]]
+- *deploy the application on container services like Amazon ECS and Google Container Engine*
+- supports on-premise systems for builds.
+* Tools for Cloud infratructure
+- Infratructure as a code
+- Some tools
+  - Ansible
+  - Chef
+  - Puppet
+  - Salt
+** Ansible
+- Red hat
+- open source
+- agentless tool which works on top of SSH
+- also automates cloud provisioning, application deployment, orchestration
+- dynamic inventory files for cloud providers like AWS and OpenStack
+- Playbooks
+  - configuration, deployment, and orchestration language
+- The Ansible Management node connects to nodes mentioned in the inventory file and runs the tasks mentioned in the playbook.
+- A Management node can be installed on any *nix-based system like Linux, Mac OS X
+- can manage any node which supports SSH and Python 2.4 or later
+- Ansible Galaxy is a free site for finding, downloading, and sharing community-developed Ansible roles.
+- Ansible Tower: enterprise with GUI
+- agentless tool
+- low learning curve
+** Puppet
+- Puppet agent/ Puppet master (client/server) model to configure the systems.
+- Puppet enterprise
+- install Puppet Agent on each system
+- each *agent*
+  - Connects securely to Puppet Master to get the series of instructions in a file referred to as the Catalog File.
+  - Performs operations from the Catalog File to get to the desired state.
+  - Sends back the status to Puppet Master.
+  - can be installed on Linux, Mac OSX
+- *Puppet Master* can be installed only on *nix systems.
+  - Compiles the Catalog File for hosts based on the system, configuration, manifest file, etc.
+  - Sends the Catalog File file to agents when they query the master.
+  - Has information about the entire environment, such as host information, metadata like authentication keys, etc.
+  - Gathers the report from each agent and then prepares the overall report.
+- Puppet defines resources on a system as Type which can be file, user, package, service, etc.
+- Nice features
+  - Centralized reporting (PuppetDB)
+  - Live system management
+  - Puppet Forge, which has ready-to-use modules for manifest files from the community.
+  - role-based access control.
+** Chef
+- client/server model
+- Chef client
+- Chef server
+- Chef workstation
+  - Develop cookbooks and recipes.
+  - Synchronize chef-repo with the version control system.
+  - run command line tools
+  - Interact with nodes to do a one-off configuration.
+- [[file:./chef-overview.png]]
+- Chef cookbook
+  - Recipes
+  - Attributes
+- Knife provides an interface between a local chef-repo and the Chef Server.
+- Chef client supported on
+  - *nix-bases
+  - Mac OSX
+  - Windows
+  - Cisco IOS XR and NX-OS
+- Chef server
+  - RHEL
+  - Ubuntu
+- features
+  - It provides role-based access control.
+  - It provides real-time visibility with Chef Analytics.
+** Salt
+- [[file:./salt-minion.png]]
+- remote execution framework
+- minions
+  - *nix
+  - osx
+  - windows
+- Salt Master and Minions communicate over a high speed data bus, ZeroMQ,
+- Salt also supports an agentless setup on top of SSH.
+- The Salt Master and Minions communicate over a secure and encrypted channel.
+- components
+  - module      : installing packages, managing files, managing containers,
+  - returners   : save a Minion's response on the Master or other locations
+  - grains      : All the information collected from Minions is saved on the Master. The collected information is referred to as Grains
+  - pillars data:
+    - Private information like cryptographic keys and other specific information about each minion which the Master has is referred to as Pillar Data.
+    - Pillar Data is shared between the Master and the individual Minion.
+- features
+  - agentless
+  - rbac
+
