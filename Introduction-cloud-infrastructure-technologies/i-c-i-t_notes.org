@@ -188,7 +188,7 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - supports Heroku buildpacks
 [[file:./deis-workflow.png]]
 
-* Conrainers
+* Containers
 - Operating-System-level virtualization allows us to run multiple isolated user-space instances in parallel.
 - user-space instances are *containers*
 - When a container is created from an image, it runs as a process on the host's kernel.
@@ -226,6 +226,7 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
     - rpm-ostree : manage 2 FS
     - systemd : manage services
     - Docker
+      - Atomic Host to install/unistall given containers/applications uses *Docker labels*
     - K8S
   - Cockpit
   - features
@@ -238,6 +239,7 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
   - Amazon EC2, Digital Ocean, Microsoft Azure, Google Cloud,
   - bare metal or vms
   - *cloud-config*
+  - CoreOS bind more than one node in a cluster by *cluster discovery token*
   - features
     - no package manager
     - active / passive root partitions
@@ -429,6 +431,7 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
     - CoreOS
     - derived from rkt Networking Proposal
     - Kubernetes has added support for CNI.
+- *You can create as many networks as you need, and you can connect a container to zero or more of these networks at any given time.*
 * Service Discovery
 - Registration
 - Lookup
@@ -592,7 +595,7 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - [[file:./shippable-struct.png]]
 - *deploy the application on container services like Amazon ECS and Google Container Engine*
 - supports on-premise systems for builds.
-* Tools for Cloud infratructure
+* Tools for Cloud infratructure : Configuration management
 - Infratructure as a code
 - Some tools
   - Ansible
@@ -679,4 +682,159 @@ is a model for enabling ubiquitous, convenient, on-demand network access to a sh
 - features
   - agentless
   - rbac
+
+* Tools for Cloud infratructure : Build & release
+- By combining  Infrastructure as a Code with versioned software, we are guaranteed to have a re-producible build and release environment every time.
+** Terraform
+- This helps us deploy the same infrastructure on VMs, bare metal or cloud.
+- HashiCorp Configuration Language (HCL)
+- Terraform Providers
+  - Physical machines, VMs, network switches, containers, etc. are treated as resources, which are exposed by providers.
+  - Terraform agnostic to the underlying platforms.
+  - providers in different stacks
+    - IaaS : AWS, GCE, DigitalOcean, OpenStack
+    - PaaS : Heroku, Cloudfoundry
+    - SaaS : Atlas, DNSimple
+- Features
+  - Infrastructure as a code
+  - Execution Plans
+    - "planning" step where it generates an execution plan.
+    - The execution plan shows what Terraform will do when you call apply.
+    - This lets you avoid any surprises when Terraform manipulates infrastructure.
+  - Resource graphs
+    - builds a graph of all your resources, and parallelizes the creation and modification of any non-dependent resources.
+  - Change Automation
+  - can manage a single application or an entire datacenter.
+** BOSH
+- open source tool for release engineering, deployment, lifecycle management, and monitoring of distributed systems.
+- supports multiple Infrastructure as a Service (IaaS) providers.
+- create VMs on top of IaaS
+- configures them to suit the requirements,
+- deploys the applications on them.
+- Supported providers
+  - AWS EC2
+  - OpenStack
+  - VMware vSphere
+  - vCloud Director
+  - Cloud Provider Interface (CPI), BOSH supports additional IaaS providers such as Google Compute Engine and Apache CloudStack.
+- concepts
+  - Stemcell
+  - Release
+  - Deployment
+  - BOSH Director
+* Tools for Cloud infratructure : Key value Store
+** etcd
+- based on the Raft consensus algorithm.
+- It was started by CoreOS and it is written in Go.
+- standalone or cluster
+- gracefully handle the master election during network partitions
+- can tolerate machine failures, including the master.
+- can also watch on a value of a key, which allows us to do certain operations based on the value change.
+- used by *K8S, Fleet, Locksminth, vulcand*
+- use cases
+  - Store connections, configuration and other settings
+  - Service Discovery in conjunction with tools like skyDNS.
+** Consul
+- distributed, highly-available system which can be used for service discovery and configuration.
+- features
+  - Service discovery in conjunction with DNS or HTTP
+  - Health checks for servcies and nodes
+  - Multi-datacenter support
+- single node or on multi-nodes
+- built on top of Serf, which provides membership, failure detection, and event broadcast.
+- uses the Raft consensus algorithm for leadership election and consistency.
+- use cases
+  - Store connections, configuration and other settings
+  - Service discovery in conjunction with DNS or HTTP.
+* Tools for Cloud infratructure : Image Building
+- Debootstrap (can also build docker images) or supermin which can help you build base images.
+** Packer
+- from Hashicorp is an Open Source tool for creating virtual images from a configuration file for different platforms.
+- creating virtual images
+  - building base image
+    - builders section of the configuration file.
+    - Amazon EC2 (AMI), DigitalOcean, Docker, Google Compute Engine, OpenStack, Parallels (PVM), QEMU, VirtualBox (OVF), and VMware (VMX).
+- Provision the base image to do configuration
+  - install software
+  - Shell, Ansible, Puppet, Chef
+- Perform post build operations
+  - copy/move the resulted image to a central repository, create a Vagrant box
+- multi-provider portability
+* Tools for Cloud Infrastructure: Debugging, Logging and Monitoring for Containerized Applications
+- strace
+- SAR (System Activity Reporter)
+- tcpdump
+- GDB (GNU Project Debugger)
+- syslog
+- Nagios
+- Zabbix
+- tools which we can use for containerized applications:
+  - Debugging: Docker CLI, Sysdig
+  - Logging: Docker CLI, Docker Logging Driver
+  - Monitoring: Docker CLI, Sysdig, cAdvisor/Heapster, Prometheus, Datadog, New Relic.
+- Native Docker tools
+  - Docker logging driver
+    - jsonfile, syslog, journald, gelf (Graylog Extended Log Format), fluentd, awslogs, splunk.
+  - Docker monitoring
+    - docker stats
+    - docker top
+** sysdig
+- Sysdig is an Open Source tool which captures low-level system information from the running Linux instance.
+- *strace + tcpdump + htop + iftop + lsof + awesome sauce*
+- offers native support for containers.
+- scriptable in Lua
+- Sysdig inserts a kernel module inside the running Linux kernel, from which it can capture system calls and OS events
+- command examples
+  - sudo sysdig -c topprocs_net
+  - sudo sysdig -pc -c topprocs_cpu container.name=apache
+  - sudo sysdig -pc -c topfiles_bytes container.name=apache
+  - sudo sysdig -p"%evt.arg.path" "evt.type=chdir and user.name=root"
+- paid solution called Sysdig Cloud,
+  - real time monitoring
+  - historical replay
+  - dynamic toplogy creation
+  - intelligent alerting
+- Support for
+  - docker
+  - k8s
+  - mesos
+  - aws
+  - gce
+
+** cAdvisor(Container Advisor)
+- collect resource usage and performance characteristics for the host system and running containers
+- supports exporting statistics for InfluxDB
+- exposes container statistics as Prometheus metrics
+** Heapster
+- Container Cluster Monitoring and Performance Analysis
+- Kubernetes and CoreOS natively
+- Heapster collects and interprets various signals, like compute resource usage, lifecycle events, etc., and exports cluster metrics via REST endpoints.
+- Kubedash, a performance analytics UI for Kubernetes, uses those endpoints
+** Fluentd
+- open source data collector, which lets us unify the data collection and consumption for a better use and understanding of data
+- [[file:./fluentd-arch.png]]
+- more than 300 plugins to connect input sources to output sources
+- 1.8, Docker supports logging drivers and Fluentd is one of them
+- [[file:./docker-fluentd.png]]
+** Datadog
+- monitoring and analytics as a service for Development and OPs teams
+- connects to
+  - Amazon EC2
+  - Apache
+  - Java
+  - MySql
+  - CentOS
+- [[file:./datadog-k8s.png]]
+* Think Like a Startup, Act Like an Enterprise
+- Security
+  - with 100% Public Cloud deployment, the entire data is managed on the cloud, which is not the preferred way for many companies
+  - and may not comply with regulations like FISMA (Federal Information Security Modernization Act) or HIPAA (Health Insurance Portability and Accountability Act).
+  - Organizations like the Cloud Security Alliance (CSA) “promote the use of best practices for providing security assurance within Cloud Computing,
+  - and to provide education on the uses of Cloud Computing to help secure all other forms of computing
+  - many third-party tools available which can do security audits for applications deployed on the cloud
+- Cost management
+  - predict and manage the cost based on usage
+- vendor lock in
+  - Docker Universal Control Plane, Nomad, Kubernetes
+- Resistance from existing employees
 
